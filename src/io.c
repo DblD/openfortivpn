@@ -107,6 +107,7 @@ static void destroy_ssl_locks(void)
 	for (i = 0; i < CRYPTO_num_locks(); i++)
 		pthread_mutex_destroy(&lockarray[i]);
 	OPENSSL_free(lockarray);
+	lockarray = NULL;
 }
 #else
 static void init_ssl_locks(void)
@@ -1117,7 +1118,7 @@ static void *pppd_read(void *arg)
 			break;
 		} else if (n == 0) {
 			log_warn("read returned %ld\n", n);
-			continue;
+			break;
 		} else if (first_time) {
 			// pppd did talk, now we can write to it if we want
 			SEM_POST(&sem_pppd_ready);
